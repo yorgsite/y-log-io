@@ -46,9 +46,6 @@ YL.LogData.prototype.toData= function(){
 		stack	: this.stack.toData()
 	},['id','time','type','args']);
 };
-// YL.LogData.prototype.toStr= function(){
-// 	return
-// };
 
 // --------------- STACK -------------
 
@@ -87,9 +84,6 @@ YL.Stack.prototype.fromLevel= function(level){
 	.filter(s=>s.indexOf(YL.prefix_sl)===0)
 	.filter((s,i)=>i>=level)
 	.map(s=>new YL.StackItem().fromLine(s));
-	// ['file','method','row','col'].forEach(k=>{
-	// 	scope[k]=scope.list[0][k];
-	// });
 
 	YL.dcopy(this.list[0],this,['file','row','col','method']);
 	return this;
