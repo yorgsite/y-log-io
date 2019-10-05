@@ -26,11 +26,12 @@ const Log= require('y-log-io');
 var output = Log.getOutput(theSame_jsonPath);
 output.start();
 ```
+
 See **[exemple_01](exemples/exemple_01.js)**.
 
-<br/>
-
 <hr/>
+
+<br/>
 
 ## <a name="tg_menu"></a> Menu
 
@@ -41,6 +42,8 @@ See **[exemple_01](exemples/exemple_01.js)**.
 + [Aliases](#tg_regisetr)
 
 <hr/>
+
+<br/>
 
 ### <a name="tg_logger"></a> Get logger
 
@@ -59,7 +62,7 @@ YLogIO.getlogger(fileName)
 ##### - Properties
 
 + timeout : **int** *default=500*.
-	- Minimal read/write period. The logger wont access the json file than once evry **timeout** ms.
+	- Minimal read/write period. The logger wont access the json file more than once evry **timeout** ms.
 	- Decrease if you want more responsiveness.
 	- Increase if you want to limit rw charge.
 + maxlog : **int** *default=100*.
@@ -69,6 +72,8 @@ YLogIO.getlogger(fileName)
 	- path to the json file name.
 
 <hr/>
+
+<br/>
 
 ### <a name="tg_output"></a> Get Output
 
@@ -127,6 +132,8 @@ Output.start();
 
 <hr/>
 
+<br/>
+
 ### <a name="tg_regisetr"></a> Aliases
 
 Share the same output among files without caring about different pathes by registering an alias.
@@ -161,6 +168,8 @@ require('y-log-io').getOutput('my-alias').start();
 ```
 
 <hr/>
+
+<br/>
 
 ### <a name="tg_regisetr"></a> Exemples
 
