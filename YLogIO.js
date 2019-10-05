@@ -10,6 +10,7 @@ var YLogIO=function(){};
 YL.id=1;
 
 YL.loggers={};
+YL.deep=3;
 
 YL.datas_file=__dirname+'/YLogIO.settings.json';
 
@@ -32,8 +33,7 @@ YL.LogData.prototype.fromLog= function(args,stack,type){
 	this.id		= YL.id++;
 	this.time	= Date.now();
 	this.type	= type||'log';
-	this.args	= args.map(a=>YL.toStr(a,2) );
-	// this.args	= args.map(a=>a+'');
+	this.args	= args.map(a=>YL.toStr(a,YL.deep) );
 	this.stack	= stack;
 	return this;
 };
