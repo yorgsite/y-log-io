@@ -1,6 +1,6 @@
 {
   "name": "y-log-io",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "console loging to an other terminal. Useful to not disturb the main terminal output.",
   "main": "YLogIO.js",
   "scripts": {
