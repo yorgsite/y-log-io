@@ -56,10 +56,15 @@ YLogIO.getLogger(fileName)
 
 Properties
 
-+ timeout : int
-Minimal read/write period. The Logger wont access the json file than once evry **timeout** ms.
-Decrease if you want more responsiveness.
-Increase if you want to limit rw charge.
++ timeout : **int**
+	- Minimal read/write period. The Logger wont access the json file than once evry **timeout** ms. *default=500*.
+	- Decrease if you want more responsiveness.
+	- Increase if you want to limit rw charge.
++ maxlog : **int**
+	- maximum logs buffer size. Limits json file size when output is not listening. *default=100*.
+	- Low value reduce file size and r/w time, but you may loose outputs.
++ fileName : **string** *read only*
+	- path to the json file name.
 
-
+	
 TODO...
