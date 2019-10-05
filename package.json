@@ -1,0 +1,28 @@
+{
+  "name": "y-log-io",
+  "version": "0.0.1",
+  "description": "console loging to an other terminal. Useful to not disturb the main terminal output.",
+  "main": "YLogIO.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yorgsite/y-log-io.git"
+  },
+  "keywords": [
+    "terminal",
+    "console",
+    "layout",
+    "display",
+    "logs",
+    "debug",
+    "development"
+  ],
+  "author": "Y0R9",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yorgsite/y-log-io/issues"
+  },
+  "homepage": "https://github.com/yorgsite/y-log-io#readme"
+}

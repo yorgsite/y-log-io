@@ -51,8 +51,10 @@ var DataIO=function(fileName,getDefault){
 		last_json=JSON.stringify(data);
 	};
 	this.whipe=function(){
-		data=get_default();
-		this.write(1);
+		if(fs.existsSync(fileName)){
+			let undef;data=undef;
+			fs.unlinkSync(fileName);
+		}
 	};
 };
 

@@ -65,7 +65,7 @@ YLogIO.getStack=function(level){
 };
 YLogIO.logStack=function(level){
 	level=level||0;
-	console.log(new YL.Stack().fromLevel(level+1).toStr());
+	console.log(style('allBack',new YL.Stack().fromLevel(level+1).toStr()));
 };
 
 // ------- Stack
@@ -240,29 +240,7 @@ YL.Date=function(time){
 
 YL.io_files=[];
 
-YL.Datas2=function(){
-	var scope=this;
-	var getDefault=()=>({
-		list:[]
-	});
-	var load=()=>{
-		this.read();
-		this.data.list.forEach(l=>{
-			YL.io_files[l.n]=new YL.IOFile(l.f);
-		});
-	};
-	DataIO.apply(this,[YL.datas_file,getDefault]);
-	this.register=function(name,fileName){
-		if(!(name in YL.io_files)){
-			YL.io_files[name]=new YL.IOFile(fileName);
-			// YL.loggers[name]=new YL.Input(fileName);
 
-			this.data.list.push({n:name,f:fileName});
-			this.write();
-		}
-	};
-	load();
-};
 YL.Datas=function(){
 	var scope=this;
 	var getDefault=()=>({
@@ -283,8 +261,32 @@ YL.Datas=function(){
 		}
 		return YL.loggers[name];
 	};
+	this.whipe=function(name){
+		if(name in YL.io_files){
+			YL.io_files[name].whipe();
+			delete YL.io_files[name];
+		}
+		if(name in YL.loggers){
+			delete YL.loggers[name];
+		}
+	};
 	load();
 };
+// YL.datas.whipe(name);
+YL.p16={
+	getCode:(rgb)=>rgb.map(d=>Math.floor(Math.max(0,Math.min(255,d)))).join(';'),
+	getFront:(code)=>'\x1b[38;2;' + code,
+	getBack:(code)=>'\x1b[48;2;' + code
+};
+YL.s16=new function(){
+	this.getFront=function(rgb){
+		return [YL.p16.getFront(YL.p16.getCode(rgb))+'m','\x1B[39m'];
+	};
+	this.getBack=function(rgb){
+		return [YL.p16.getBack(YL.p16.getCode(rgb))+'m','\x1B[49m'];
+	};
+}();
+
 YL.styles={
 	startLine:['\x1B[47m\x1B[30m', '\x1B[39m\x1B[49m'],
 	topLine:['\x1B[4m', '\x1B[24m'],
@@ -294,6 +296,15 @@ YL.styles={
 	line:['\x1B[1m\x1B[35m', '\x1B[39m\x1B[22m'],
 	allBack:['','']
 };
+YL.styles16={
+	startLine:['\x1B[47m\x1B[30m', '\x1B[39m\x1B[49m'],
+	topLine:['\x1B[4m', '\x1B[24m'],
+	time:['\x1B[1m\x1B[36m', '\x1B[39m\x1B[22m'],
+	method:YL.s16.getFront([100,100,255]),
+	file:['\x1B[1m', '\x1B[22m'],
+	line:['\x1B[1m\x1B[35m', '\x1B[39m\x1B[22m'],
+	allBack:YL.s16.getBack([30,30,30])
+};
 
 /**
 for output terminal
@@ -302,26 +313,28 @@ for output terminal
 */
 YL.Output=function(fileName){
 	var scope=this;
+
 	// maximal rw period (rw at least 1/period) => fix fs.watch leaks
 	this.timeout=2000;
+	// time between log separators
 	this.splitTimeout=2000;
+	this.hasRGB=false;
 
 	let llTime=0;
 	let started=0;
 	let t_id=0;
+	let sgb=YL.s16.getBack([255,30,30]);
 	if(!(fileName in YL.io_files)){
 		YL.io_files[fileName]=new YL.IOFile(fileName);
 	}
 	let file=YL.io_files[fileName];
 	let bold=['\x1B[1m', '\x1B[22m'];
-	this.styles={
-		startLine:['\x1B[47m\x1B[30m', '\x1B[39m\x1B[49m'],
-		topLine:['\x1B[4m', '\x1B[24m'],
-		time:['\x1B[1m\x1B[36m', '\x1B[39m\x1B[22m'],
-		method:['\x1B[1m\x1B[34m', '\x1B[39m\x1B[22m'],
-		file:['\x1B[1m', '\x1B[22m'],
-		line:['\x1B[1m\x1B[35m', '\x1B[39m\x1B[22m'],
-		allBack:['','']
+	var logdat=function(txt){
+
+	};
+	var style=function(type,txt){
+		let st=scope.hasRGB?YL.styles16:YL.styles;
+		return st[type].join(txt);
 	};
 	this.show={
 		startLine	: true,
@@ -368,10 +381,11 @@ YL.Output=function(fileName){
 		let fc=tdif>scope.splitTimeout?'─':' ';
 		// let tl=Array(process.stdout.columns-1).fill(fc).join('');
 		let tl=fc.repeat(process.stdout.columns-1);
-		console.log(scope.styles.topLine.join(tl));
+		// console.log(scope.styles.topLine.join(tl));
+		console.log(style('allBack',style('topLine',tl)));
 	};
 	update.logInfo=function(d){
-		console.log('●'+update.getInfo(d.stack,new YL.Date(d.time)));
+		console.log(style('allBack','●'+update.getInfo(d.stack,new YL.Date(d.time))));
 	};
 	//… ←↑→↓─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╦╧╨╩╪╫╬▀▄█▌▐░▒▓■□▪▫▬▲►▼◄◊○◌●◘◙◦☺☻☼♠♣♥♦♪♫♫
 	update.logStack=function(d){
@@ -387,7 +401,7 @@ YL.Output=function(fileName){
 				return bold.join(pref)+' '+info;
 			}
 		}).filter(l=>l);
-		console.log(lines.join('\n'));
+		console.log(style('allBack',lines.join('\n')));
 	};
 	update.getInfo=function(ldat,date){
 		let dd={};
@@ -399,7 +413,8 @@ YL.Output=function(fileName){
 		Object.keys(dd)
 		.filter(k=>scope.show[k])
 		.forEach((k,i)=>{
-			lstr+=(i>0?' ':'')+scope.styles[k].join(dd[k]);
+			lstr+=(i>0?' ':'')+style(k,dd[k]);
+			// lstr+=(i>0?' ':'')+scope.styles[k].join(dd[k]);
 		})
 		return lstr;
 	};
@@ -409,7 +424,8 @@ YL.Output=function(fileName){
 			started=1;
 			fs.watchFile(fileName,update);
 			if(scope.show.startLine){
-				console.log(scope.styles.startLine.join(scope.startMsg));
+				// console.log(scope.styles.startLine.join(scope.startMsg));
+				console.log(style('startLine',scope.startMsg));
 			}
 			update();
 		}
@@ -488,6 +504,10 @@ register an alias name for the logs json file. useful for access in different fi
 */
 YLogIO.register=function(name,fileName){
 	YL.datas.register(name,fileName);
+	return this;
+};
+YLogIO.whipe=function(name){
+	YL.datas.whipe(name);
 	return this;
 };
 
