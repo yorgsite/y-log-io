@@ -255,7 +255,7 @@ YL.Datas=function(){
 		}
 		return YL.loggers[name];
 	};
-	this.whipe=function(name){
+	this.whipeAlias=function(name){
 		if(name in YL.io_files){
 			YL.io_files[name].whipe();
 			delete YL.io_files[name];
@@ -472,7 +472,7 @@ YL.Input=function(fileName){
 
 /**
 get input terminal, avoid duplicate instances.
-@param {string} fileName : path to logs json file OR name of a registered file path.
+@param {string} fileName : path to logs json file OR a registered file alias.
 @return {YL.Input} the fake console
 */
 YLogIO.getLogger=function(fileName){
@@ -483,8 +483,8 @@ YLogIO.getLogger=function(fileName){
 };
 
 /**
-get output logger.
-@param {string} fileName : path to logs json file OR name of a registered file path.
+get logger output.
+@param {string} fileName : path to logs json file OR a registered file alias.
 @return {YL.Output} the console output logger. call logger.start(); to activate.
 */
 YLogIO.getOutput=function(fileName){
@@ -500,9 +500,17 @@ YLogIO.register=function(name,fileName){
 	YL.datas.register(name,fileName);
 	return this;
 };
+
+/**
+removes all or one registered alias(es).
+@param {string} [name] : alias to remove. removes all if not a string.
+*/
 YLogIO.whipe=function(name){
-	YL.datas.whipe(name);
-	return this;
+	if(typeof(name)==='string'){
+		YL.datas.whipeAlias(name);
+	}else {
+		YL.datas.whipe();
+	}
 };
 
 YL.datas=new YL.Datas();
